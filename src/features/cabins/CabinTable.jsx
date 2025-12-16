@@ -36,7 +36,7 @@ const CabinTable = function () {
   } = useQuery({
     queryKey: ["cabins"],
     queryFn: getCabins,
-  });
+  }); // Fetching cabins data using reactQuery
 
   if (isLoading) return <Spinner />;
 
