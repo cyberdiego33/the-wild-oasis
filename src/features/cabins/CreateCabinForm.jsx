@@ -10,7 +10,7 @@ import FormRow from "../../ui/FormRow";
 import useCreateCabin from "./useCreateCabin";
 import useEditCabin from "./useEditCabin";
 
-function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
+function CreateCabinForm({ onCloseModal, cabinToEdit = {} }) {
   const { id: editId, ...editValues } = cabinToEdit;
 
   const isEditSession = Boolean(editId); // Checking if this is an edit session
@@ -22,24 +22,44 @@ function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
   const { errors } = formState; // Getting error from empty or bad fields
   // console.log(errors);
 
-  const { createCabin, isAddingRow } = useCreateCabin(reset, setShowForm); // Custom
+  const { createCabin, isAddingRow } = useCreateCabin(); // Custom
 
-  const { editCabin, isEditing } = useEditCabin(reset, setShowForm); // Custom
+  const { editCabin, isEditing } = useEditCabin(); // Custom
 
   const isWorking = isAddingRow || isEditing; // for loading
 
   const onSubmit = function (data) {
     const image = typeof data.image === "string" ? data.image : data.image[0];
     if (isEditSession)
-      editCabin({ newCabinData: { ...data, image: image }, id: editId });
-    else createCabin({ ...data, image: image });
+      editCabin(
+        { newCabinData: { ...data, image: image }, id: editId },
+        {
+          onSuccess: (data) => {
+            reset();
+            onCloseModal?.();
+          },
+        }
+      );
+    else
+      createCabin(
+        { ...data, image: image },
+        {
+          onSuccess: (data) => {
+            reset();
+            onCloseModal?.();
+          },
+        }
+      );
   };
 
   const onError = function (errors) {
     console.log(errors);
   };
   return (
-    <Form onSubmit={handleSubmit(onSubmit, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, onError)}
+      type={onCloseModal ? "Modal" : "regular"}
+    >
       <FormRow label="Cabin name" error={errors?.name?.message}>
         <Input
           type="text"
@@ -118,7 +138,11 @@ function CreateCabinForm({ setShowForm, cabinToEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseModal?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isWorking}>
