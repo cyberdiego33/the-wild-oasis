@@ -1,6 +1,33 @@
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
+export async function getAllBookings({ filter, sortBy }) {
+  let query = supabase
+    .from("bookings")
+    .select(
+      "id, created_at, startDate, endDate, numNights, status, totalPrice, cabins(name), guests(fullName, email)"
+    );
+  // .select("*, cabins(*), guests(*)");
+
+  // FILTER
+  if (filter) query = query[filter.method || "eq"](filter.field, filter.value);
+
+  // SORT
+  if (sortBy)
+    query = query.order(sortBy.field, {
+      ascending: sortBy.direction === "asc",
+    });
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.log(error);
+    throw new Error("Bookings could not be loaded");
+  }
+
+  return data;
+}
+
 export async function getBooking(id) {
   const { data, error } = await supabase
     .from("bookings")
