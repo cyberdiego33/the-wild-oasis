@@ -1,31 +1,39 @@
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
+import { PAGE_SIZE } from "../utils/constants";
 
-export async function getAllBookings({ filter, sortBy }) {
+export async function getAllBookings({ filter, sortBy, page }) {
+  // 1. Initialize query immediately
   let query = supabase
     .from("bookings")
     .select(
-      "id, created_at, startDate, endDate, numNights, status, totalPrice, cabins(name), guests(fullName, email)"
+      "id, created_at, startDate, endDate, numNights, status, totalPrice, cabins(name), guests(fullName, email)",
+      { count: "exact" }
     );
-  // .select("*, cabins(*), guests(*)");
 
-  // FILTER
-  if (filter) query = query[filter.method || "eq"](filter.field, filter.value);
+  // 2. Chain filters (this just modifies the object)
+  if (filter) {
+    query = query[filter.method || "eq"](filter.field, filter.value);
+  }
 
-  // SORT
-  if (sortBy)
+  // 3. Chain sorting (this just modifies the object)
+  if (sortBy && sortBy.field !== "table") {
     query = query.order(sortBy.field, {
       ascending: sortBy.direction === "asc",
     });
-
-  const { data, error } = await query;
-
-  if (error) {
-    console.log(error);
-    throw new Error("Bookings could not be loaded");
   }
 
-  return data;
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    query = query.range(from, to);
+  }
+
+  // 4. EXECUTE the query once at the very end
+  const { data, error, count } = await query;
+
+  if (error) throw new Error("Bookings could not be loaded");
+  return { data, count };
 }
 
 export async function getBooking(id) {
