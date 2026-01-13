@@ -42,6 +42,11 @@ const Amount = styled.div`
   font-weight: 500;
 `;
 
+// function BookingRow({ booking }) {
+//   console.log(booking);
+//   return <p>booking is coming</p>;
+// }
+
 function BookingRow({
   booking: {
     id: bookingId,

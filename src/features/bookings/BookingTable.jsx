@@ -11,6 +11,8 @@ function BookingTable() {
   // const bookings = [];
   const { isLoading, bookings, count } = useBookingsQuery();
 
+  // console.log("BOOKINGS:", bookings);
+
   if (isLoading) return <Spinner />;
   if (!bookings || !bookings.length) return <Empty resourceName="booking" />;
 
