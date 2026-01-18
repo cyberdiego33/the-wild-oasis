@@ -70,13 +70,12 @@ export async function updateCurrentUser({ password, fullName, avatar }) {
   if (storageError) throw new Error(`couldn't upload image`);
 
   // 3. Update avatar in the user
-  const { data: updatedUser, error: uploadImgError } = supabase.auth.updateUser(
-    {
+  const { data: updatedUser, error: uploadImgError } =
+    await supabase.auth.updateUser({
       data: {
         avatar: `${supabaseUrl}/storage/v1/object/public/avatar/${fileName}`,
       },
-    }
-  );
+    });
 
   if (uploadImgError) throw new Error(`Couldn't update image`);
   return { updateuseDate: data, uploadAvatar: updatedUser };
