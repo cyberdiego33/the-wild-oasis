@@ -8,7 +8,7 @@ export async function getAllBookings({ filter, sortBy, page }) {
     .from("bookings")
     .select(
       "id, created_at, startDate, endDate, numNights, status, totalPrice, cabins(name), guests(fullName, email)",
-      { count: "exact" }
+      { count: "exact" },
     );
 
   // 2. Chain filters (this just modifies the object)
@@ -48,7 +48,7 @@ export async function getBooking(id) {
     throw new Error("Booking not found");
   }
 
-  alert(data);
+  // alert(data);
 
   return data;
 }
@@ -91,7 +91,7 @@ export async function getStaysTodayActivity() {
     .from("bookings")
     .select("*, guests(fullName, nationality, countryFlag)")
     .or(
-      `and(status.eq.unconfirmed,startDate.eq.${getToday()}),and(status.eq.checked-in,endDate.eq.${getToday()})`
+      `and(status.eq.unconfirmed,startDate.eq.${getToday()}),and(status.eq.checked-in,endDate.eq.${getToday()})`,
     )
     .order("created_at");
 
