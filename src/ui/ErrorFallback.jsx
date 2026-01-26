@@ -42,7 +42,7 @@ const ErrorFallback = function ({ error, resetErrorBoundary }) {
           <Heading as={`h1`}>Something went wrong</Heading>
           <p>{error.message}</p>
           <Button size="large" onClick={resetErrorBoundary}>
-            Try again
+            Go back Home
           </Button>
         </Box>
       </StyledErrorFallback>

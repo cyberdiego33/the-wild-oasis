@@ -66,7 +66,7 @@ const StyledButton = styled.button`
   }
 `;
 
-// 1) Create Menuu Context Api
+// 1) Create Menu Context Api
 const MenusContext = createContext();
 
 // 2) Create the parent Component

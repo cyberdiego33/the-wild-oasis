@@ -2,6 +2,8 @@ import styled from "styled-components";
 import Logo from "./Logo";
 import MainNav from "./MainNav";
 import Uploader from "../data/Uploader";
+import { useState } from "react";
+import AllowUpload from "./AllowUpload";
 
 const StyledSidebar = styled.aside`
   background-color: var(--color-grey-0);
@@ -14,11 +16,17 @@ const StyledSidebar = styled.aside`
 `;
 
 const SideBar = function () {
+  const [openUpload, setOpenUpload] = useState(false);
   return (
     <StyledSidebar>
       <Logo />
       <MainNav />
-      <Uploader />
+      {openUpload ? (
+        <Uploader setOpenUpload={setOpenUpload} />
+      ) : (
+        <AllowUpload setOpenUpload={setOpenUpload} />
+      )}
+      {/* <Uploader /> */}
     </StyledSidebar>
   );
 };

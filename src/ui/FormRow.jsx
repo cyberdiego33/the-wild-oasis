@@ -36,10 +36,14 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-const FormRow = function ({ label, error, children }) {
+const FormRow = function ({ label, error, children, forBooking }) {
   return (
     <StyledFormRow>
-      {label && <Label htmlFor={children.props.id}>{label} for website</Label>}
+      {label && (
+        <Label htmlFor={children.props.id}>
+          {label} for {forBooking ? forBooking : "website"}
+        </Label>
+      )}
       {children}
       {error && <Error>{error}</Error>}
     </StyledFormRow>

@@ -104,7 +104,7 @@ async function createBookings() {
   if (error) console.log(error.message);
 }
 
-function Uploader() {
+function Uploader({ setOpenUpload }) {
   const [isLoading, setIsLoading] = useState(false);
 
   async function uploadAll() {
@@ -120,6 +120,7 @@ function Uploader() {
     await createBookings();
 
     setIsLoading(false);
+    setOpenUpload(false);
   }
 
   async function uploadBookings() {
@@ -127,6 +128,7 @@ function Uploader() {
     await deleteBookings();
     await createBookings();
     setIsLoading(false);
+    setOpenUpload(false);
   }
 
   return (
